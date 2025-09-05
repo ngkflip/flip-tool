@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Full Send Flip Tool 🤖</title>
+  <title>Full Send Flip Tool 🤖🔥</title>
   <style>
     body {
       font-family: Roboto, Arial, sans-serif;
@@ -11,6 +11,8 @@
       margin: 0;
       padding: 0;
     }
+
+    /* === Flip Tool === */
     #flipToolContainer {
       position: fixed;
       top: 50%;
@@ -29,6 +31,10 @@
       margin-top: 0;
       color: #ffffff !important;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     #flipToolContainer label strong {
       color: #cccccc !important;
@@ -73,11 +79,60 @@
       background: #dc3545;
       color: #fff;
     }
+
+    /* === Sheet Section === */
+    #sheetContainer {
+      margin: 40px auto;
+      max-width: 900px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+      border-radius: 16px;
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    #sheetContainer h2 {
+      text-align: center;
+      margin-top: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    #sheetTable {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #sheetTable th, #sheetTable td {
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 10px;
+      text-align: left;
+    }
+    #sheetTable th {
+      background: rgba(255,255,255,0.1);
+      font-weight: bold;
+    }
+    #sheetTable tr:nth-child(even) {
+      background: rgba(255,255,255,0.05);
+    }
+    #sheetTable a {
+      color: #4da6ff;
+      text-decoration: none;
+    }
+    #sheetTable a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+  <!-- === Flip Tool === -->
   <div id="flipToolContainer">
-    <h2>Full Send Flip Tool 🤖</h2>
+    <h2>
+      <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHVxMGtocWl5cmZ2enJtbndmODYycnE1YTkzdTVkZzFjeWgxMTFhcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y38iUdpAHYtBySPxGp/giphy.gif" 
+           alt="Robot" style="height:32px;vertical-align:middle;">
+      Full Send Flip Tool
+    </h2>
 
     <label>
       <strong>Enter Search:</strong>
@@ -104,6 +159,27 @@
     </div>
   </div>
 
+  <!-- === Sheet Data Section === -->
+  <div id="sheetContainer">
+    <h2>
+      <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExank2Y290dnI0YzRlbzJueWk3ZTFqMHR6NXh1ZGhpeW9oYjJtNXQwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cfQNFC8e6Ds8QvWIuK/giphy.gif" 
+           alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
+      Live Product Leads
+    </h2>
+    <table id="sheetTable">
+      <thead>
+        <tr>
+          <th>SKU - UPC</th>
+          <th>Product Title</th>
+          <th>Store Link</th>
+          <th>eBay Comps</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- === Scripts === -->
   <script>
     const categorySelect = document.getElementById("flipToolCategory");
     const siteSelect = document.getElementById("flipToolSite");
@@ -190,6 +266,30 @@
 
       if (u) window.open(u, "_blank");
     };
+
+    // === Google Sheet Fetch ===
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
+
+    async function loadSheetData() {
+      const res = await fetch(sheetUrl);
+      const text = await res.text();
+      const rows = text.trim().split("\n").map(r => r.split(","));
+      const tbody = document.querySelector("#sheetTable tbody");
+      tbody.innerHTML = "";
+
+      rows.slice(1).forEach(r => {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r[0]}</td>
+          <td>${r[1]}</td>
+          <td><a href="${r[2]}" target="_blank">Link</a></td>
+          <td><a href="${r[3]}" target="_blank">eBay</a></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadSheetData();
   </script>
 </body>
 </html>
