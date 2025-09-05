@@ -13,10 +13,11 @@
     }
 
     /* === Flip Tool === */
-    .flipToolContainer {
+    #flipToolContainer {
       position: fixed;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(12px);
       padding: 20px;
@@ -25,31 +26,8 @@
       color: #fff !important;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       width: 380px;
-      transition: transform 0.4s ease, opacity 0.4s ease, max-height 0.4s ease;
     }
-
-    #flipToolContainer {
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    #leadsContainer {
-      display: none;
-      top: calc(50% + 260px); /* starts below main tool */
-      transform: translate(-50%, 20px);
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-    }
-
-    #leadsContainer.show {
-      display: block;
-      transform: translate(-50%, 0);
-      opacity: 1;
-      max-height: 2000px; /* allows it to expand with content */
-    }
-
-    .flipToolContainer h2 {
+    #flipToolContainer h2 {
       margin-top: 0;
       color: #ffffff !important;
       text-align: center;
@@ -58,22 +36,19 @@
       justify-content: center;
       gap: 8px;
     }
-
-    .flipToolContainer label strong {
+    #flipToolContainer label strong {
       color: #cccccc !important;
       display: block;
       margin-top: 12px;
       margin-bottom: 4px;
     }
-
-    .flipToolContainer label {
+    #flipToolContainer label {
       display: block;
       margin: 6px 0;
       color: #ffffff !important;
     }
-
-    .flipToolContainer input[type=text],
-    .flipToolContainer select {
+    #flipToolContainer input[type=text],
+    #flipToolContainer select {
       width: 100%;
       padding: 8px;
       margin: 10px 0;
@@ -82,12 +57,10 @@
       border-radius: 8px;
       color: #fff;
     }
-
-    .flipToolContainer select option {
+    #flipToolContainer select option {
       color: #000;
     }
-
-    .flipToolContainer button {
+    #flipToolContainer button {
       margin: 6px;
       padding: 10px 14px;
       border: none;
@@ -98,17 +71,49 @@
       color: #e0e0e0;
       transition: background 0.3s ease, color 0.3s ease;
     }
-
-    .flipToolContainer button:hover {
+    #flipToolContainer button:hover {
       background: #3c3c3c;
       color: #fff;
     }
 
-    /* === Sheet Table === */
+    /* === Sheet Container Popup === */
+    #sheetContainer {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+      border-radius: 16px;
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      width: 380px;
+      max-height: 80vh;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000000;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      cursor: grab;
+    }
+    #sheetContainer.show {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+
+    #sheetContainer h2 {
+      text-align: center;
+      margin-top: 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
     #sheetTable {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
     }
     #sheetTable th, #sheetTable td {
       border: 1px solid rgba(255,255,255,0.2);
@@ -132,9 +137,8 @@
   </style>
 </head>
 <body>
-
-  <!-- Main Flip Tool -->
-  <div id="flipToolContainer" class="flipToolContainer">
+  <!-- === Flip Tool === -->
+  <div id="flipToolContainer">
     <h2>
       <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHVxMGtocWl5cmZ2enJtbndmODYycnE1YTkzdTVkZzFjeWgxMTFhcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y38iUdpAHYtBySPxGp/giphy.gif" 
            alt="Robot" style="height:32px;vertical-align:middle;">
@@ -166,13 +170,9 @@
     </div>
   </div>
 
-  <!-- Leads Floating Tool -->
-  <div id="leadsContainer" class="flipToolContainer">
-    <h2>
-      <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExank2Y290dnI0YzRlbzJueWk3ZTFqMHR6NXh1ZGhpeW9oYjJtNXQwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cfQNFC8e6Ds8QvWIuK/giphy.gif" 
-           alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
-      Live Product Leads
-    </h2>
+  <!-- === Sheet Container Popup === -->
+  <div id="sheetContainer">
+    <h2>Live Product Leads</h2>
     <table id="sheetTable">
       <thead>
         <tr>
@@ -186,12 +186,12 @@
     </table>
   </div>
 
-  <!-- Scripts -->
+  <!-- === Scripts === -->
   <script>
     const categorySelect = document.getElementById("flipToolCategory");
     const siteSelect = document.getElementById("flipToolSite");
     const leadsBtn = document.getElementById("flipToolLeads");
-    const leadsContainer = document.getElementById("leadsContainer");
+    const sheetContainer = document.getElementById("sheetContainer");
 
     const sites = {
       online: [
@@ -230,15 +230,15 @@
         siteSelect.appendChild(opt);
       });
     }
-
     categorySelect.addEventListener("change", () => updateSites(categorySelect.value));
     updateSites("online");
 
+    // Search logic
     document.getElementById("flipToolSearch").onclick = function() {
-      let q = document.getElementById("flipToolInput").value.trim();
+      var q = document.getElementById("flipToolInput").value.trim();
       if (!q) { alert("Enter a keyword or UPC"); return; }
-      let site = siteSelect.value;
-      let u = "";
+      var site = siteSelect.value;
+      var u = "";
 
       if (site === "ebay") u = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(q) + "&LH_Sold=1&LH_Complete=1";
       else if (site === "mercari") u = "https://www.mercari.com/search/?itemStatuses=2-3&keyword=" + encodeURIComponent(q);
@@ -263,6 +263,7 @@
       if (u) window.open(u, "_blank");
     };
 
+    // === Google Sheet Fetch ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
 
     async function loadSheetData() {
@@ -283,15 +284,61 @@
       });
     }
 
-    // Floating Leads popup
+    // View Leads button popup
     leadsBtn.onclick = function() {
-      if (leadsContainer.classList.contains("show")) {
-        leadsContainer.classList.remove("show");
+      if (sheetContainer.classList.contains("show")) {
+        sheetContainer.classList.remove("show");
       } else {
-        leadsContainer.classList.add("show");
         loadSheetData();
+        sheetContainer.classList.add("show");
+        sheetContainer.style.height = "auto";
+        if(sheetContainer.scrollHeight > window.innerHeight * 0.8) {
+          sheetContainer.style.height = window.innerHeight * 0.8 + "px";
+        }
       }
     };
+
+    // === Draggable (desktop & touch) ===
+    let isDragging = false, startX, startY, origX, origY;
+
+    sheetContainer.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = sheetContainer.getBoundingClientRect();
+      origX = rect.left;
+      origY = rect.top;
+      sheetContainer.style.cursor = "grabbing";
+    });
+
+    sheetContainer.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      let dx = e.clientX - startX;
+      let dy = e.clientY - startY;
+      sheetContainer.style.left = origX + dx + "px";
+      sheetContainer.style.top = origY + dy + "px";
+    });
+
+    sheetContainer.addEventListener('mouseup', () => { isDragging = false; sheetContainer.style.cursor="grab"; });
+    sheetContainer.addEventListener('mouseleave', () => { isDragging = false; sheetContainer.style.cursor="grab"; });
+
+    // Touch support
+    sheetContainer.addEventListener('touchstart', e => {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      const rect = sheetContainer.getBoundingClientRect();
+      origX = rect.left;
+      origY = rect.top;
+    });
+    sheetContainer.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      let dx = e.touches[0].clientX - startX;
+      let dy = e.touches[0].clientY - startY;
+      sheetContainer.style.left = origX + dx + "px";
+      sheetContainer.style.top = origY + dy + "px";
+    });
+    sheetContainer.addEventListener('touchend', () => { isDragging = false; });
   </script>
 </body>
 </html>
