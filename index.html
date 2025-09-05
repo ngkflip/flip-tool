@@ -79,6 +79,10 @@
       background: #dc3545;
       color: #fff;
     }
+    #flipToolLeads {
+      background: #007bff;
+      color: #fff;
+    }
 
     /* === Sheet Section === */
     #sheetContainer {
@@ -156,6 +160,7 @@
     <div style="text-align:center;margin-top:15px;">
       <button id="flipToolSearch">Search</button>
       <button id="flipToolCancel">Cancel</button>
+      <button id="flipToolLeads">View Leads</button>
     </div>
   </div>
 
@@ -265,6 +270,11 @@
       else if (site === "homedepot") u = "https://www.homedepot.com/s/" + encodeURIComponent(q);
 
       if (u) window.open(u, "_blank");
+    };
+
+    // NEW: View Leads button
+    document.getElementById("flipToolLeads").onclick = function() {
+      document.getElementById("sheetContainer").scrollIntoView({ behavior: "smooth" });
     };
 
     // === Google Sheet Fetch ===
