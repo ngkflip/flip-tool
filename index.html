@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full Send Flip Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111 url("https://static.md/a19546e631ec1e67226c0912365207c6.gif") center/cover no-repeat;
+      color: #fff;
+      text-align: center;
+      padding: 60px;
+    }
+    .bookmarklet-btn {
+      display: inline-block;
+      background: #28a745;
+      color: white;
+      padding: 12px 20px;
+      margin-top: 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: 0.2s;
+    }
+    .bookmarklet-btn:hover {
+      background: #218838;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Full Send Flip Tool</h1>
+  <p>Drag the button below to your bookmarks bar to add the Flip Tool:</p>
+
+  <a class="bookmarklet-btn" href='javascript:(function(){if(window.__flipToolOpen)return;window.__flipToolOpen=true;var o=document.createElement("div");o.id="flipToolContainer";o.innerHTML=`<style>#flipToolContainer{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.65);backdrop-filter:blur(12px);padding:20px;border-radius:16px;z-index:999999;font-family:Roboto,Arial,sans-serif!important;color:#fff!important;box-shadow:0 8px 32px rgba(0,0,0,0.4);width:360px}#flipToolContainer h2{margin-top:0;color:#ffffff!important;text-align:center}#flipToolContainer label strong{color:#cccccc!important;display:block;margin-top:12px;margin-bottom:4px}#flipToolContainer label{display:block;margin:6px 0;color:#ffffff!important}#flipToolContainer input[type=text]{width:100%;padding:8px;margin:10px 0;background:rgba(255,255,255,0.15);border:1px solid #fff;border-radius:8px;color:#fff}#flipToolContainer button{margin:6px;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;transition:0.25s}#flipToolContainer button:hover{transform:scale(1.05)}#flipToolSearch{background:#28a745;color:#fff}#flipToolCancel{background:#dc3545;color:#fff}#flipToolContainer input[type=radio]{margin-right:6px;accent-color:#007bff}</style><h2>Full Send Flip 🤖</h2><label><strong>Enter Search:</strong><input type="text" id="flipToolInput" placeholder="Type something..."></label><label><strong>Choose Category:</strong><label><input type="radio" name="flipToolCat" value="1" checked> Flips</label><label><input type="radio" name="flipToolCat" value="2"> Marketplace</label><label><input type="radio" name="flipToolCat" value="3"> Stores</label></label><label><strong>Choose Store Site:</strong><select id="flipToolSite"><option value="1">eBay</option><option value="2">Mercari</option><option value="3">Watchcount</option><option value="4">GOAT</option><option value="5">StockX</option><option value="6">GameStop</option><option value="7">BestBuy</option><option value="8">Amazon</option><option value="9">Walmart</option><option value="10">Target</option><option value="11">Costco</option><option value="12">Sam's Club</option><option value="13">Lowe's</option><option value="14">Home Depot</option></select></label><div style="text-align:center"><button id="flipToolSearch">Search</button><button id="flipToolCancel">Cancel</button></div>`;document.body.appendChild(o);document.getElementById("flipToolCancel").onclick=function(){document.body.removeChild(o);window.__flipToolOpen=false};document.getElementById("flipToolSearch").onclick=function(){var q=document.getElementById("flipToolInput").value.trim();if(!q){alert("Enter a keyword");return}var s=document.getElementById("flipToolSite").value;var u="";if(s=="1")u="https://www.ebay.com/sch/i.html?_nkw="+encodeURIComponent(q);else if(s=="2")u="https://www.mercari.com/search/?keyword="+encodeURIComponent(q);else if(s=="3")u="https://www.watchcount.com/sold/"+encodeURIComponent(q);else if(s=="4")u="https://www.goat.com/search?query="+encodeURIComponent(q);else if(s=="5")u="https://stockx.com/search?s="+encodeURIComponent(q);else if(s=="6")u="https://www.gamestop.com/search/?q="+encodeURIComponent(q);else if(s=="7")u="https://www.bestbuy.com/site/searchpage.jsp?st="+encodeURIComponent(q);else if(s=="8")u="https://www.amazon.com/s?k="+encodeURIComponent(q);else if(s=="9")u="https://www.walmart.com/search/?query="+encodeURIComponent(q);else if(s=="10")u="https://www.target.com/s?searchTerm="+encodeURIComponent(q);else if(s=="11")u="https://www.costco.com/CatalogSearch?keyword="+encodeURIComponent(q);else if(s=="12")u="https://www.samsclub.com/s/search="+encodeURIComponent(q);else if(s=="13")u="https://www.lowes.com/search?searchTerm="+encodeURIComponent(q);else if(s=="14")u="https://www.homedepot.com/s/"+encodeURIComponent(q);if(u)window.open(u,"_blank");}})();'>Add Full Send Flip Tool</a>
+
+</body>
+</html>
