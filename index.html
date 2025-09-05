@@ -25,6 +25,7 @@
       color: #fff !important;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       width: 380px;
+      transition: transform 0.4s ease, opacity 0.4s ease, max-height 0.4s ease;
     }
 
     #flipToolContainer {
@@ -34,7 +35,18 @@
 
     #leadsContainer {
       display: none;
-      top: calc(50% + 260px); /* floating below main tool */
+      top: calc(50% + 260px); /* starts below main tool */
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+    }
+
+    #leadsContainer.show {
+      display: block;
+      transform: translate(-50%, 0);
+      opacity: 1;
+      max-height: 2000px; /* allows it to expand with content */
     }
 
     .flipToolContainer h2 {
@@ -222,12 +234,11 @@
     categorySelect.addEventListener("change", () => updateSites(categorySelect.value));
     updateSites("online");
 
-    // Search logic
     document.getElementById("flipToolSearch").onclick = function() {
-      var q = document.getElementById("flipToolInput").value.trim();
+      let q = document.getElementById("flipToolInput").value.trim();
       if (!q) { alert("Enter a keyword or UPC"); return; }
-      var site = siteSelect.value;
-      var u = "";
+      let site = siteSelect.value;
+      let u = "";
 
       if (site === "ebay") u = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(q) + "&LH_Sold=1&LH_Complete=1";
       else if (site === "mercari") u = "https://www.mercari.com/search/?itemStatuses=2-3&keyword=" + encodeURIComponent(q);
@@ -252,7 +263,6 @@
       if (u) window.open(u, "_blank");
     };
 
-    // === Load Google Sheet ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
 
     async function loadSheetData() {
@@ -273,12 +283,12 @@
       });
     }
 
-    // Show Leads as floating tool
+    // Floating Leads popup
     leadsBtn.onclick = function() {
-      if (leadsContainer.style.display === "block") {
-        leadsContainer.style.display = "none";
+      if (leadsContainer.classList.contains("show")) {
+        leadsContainer.classList.remove("show");
       } else {
-        leadsContainer.style.display = "block";
+        leadsContainer.classList.add("show");
         loadSheetData();
       }
     };
