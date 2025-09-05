@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Full Send Flip Tool 🤖</title>
+  <style>
+    body {
+      font-family: Roboto, Arial, sans-serif;
+      background: url("https://static.md/a19546e631ec1e67226c0912365207c6.gif") center/cover no-repeat fixed;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    #flipToolContainer {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+      border-radius: 16px;
+      z-index: 999999;
+      color: #fff !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      width: 380px;
+    }
+    #flipToolContainer h2 {
+      margin-top: 0;
+      color: #ffffff !important;
+      text-align: center;
+    }
+    #flipToolContainer label strong {
+      color: #cccccc !important;
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+    #flipToolContainer label {
+      display: block;
+      margin: 6px 0;
+      color: #ffffff !important;
+    }
+    #flipToolContainer input[type=text],
+    #flipToolContainer select {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid #fff;
+      border-radius: 8px;
+      color: #fff;
+    }
+    #flipToolContainer select option {
+      color: #000;
+    }
+    #flipToolContainer button {
+      margin: 6px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+    #flipToolContainer button:hover {
+      transform: scale(1.05);
+    }
+    #flipToolSearch {
+      background: #28a745;
+      color: #fff;
+    }
+    #flipToolCancel {
+      background: #dc3545;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="flipToolContainer">
+    <h2>Full Send Flip Tool 🤖</h2>
+
+    <label>
+      <strong>Enter Search:</strong>
+      <input type="text" id="flipToolInput" placeholder="Enter keyword or UPC">
+    </label>
+
+    <label>
+      <strong>Choose Category:</strong>
+      <select id="flipToolCategory">
+        <option value="online">Online Flip</option>
+        <option value="local">Local Flip</option>
+        <option value="store">Store Search</option>
+      </select>
+    </label>
+
+    <label>
+      <strong>Choose Site:</strong>
+      <select id="flipToolSite"></select>
+    </label>
+
+    <div style="text-align:center;margin-top:15px;">
+      <button id="flipToolSearch">Search</button>
+      <button id="flipToolCancel">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const categorySelect = document.getElementById("flipToolCategory");
+    const siteSelect = document.getElementById("flipToolSite");
+
+    const sites = {
+      online: [
+        {value:"ebay", text:"eBay Sold"},
+        {value:"mercari", text:"Mercari"},
+        {value:"watchcount", text:"WatchCount"},
+        {value:"goat", text:"GOAT"},
+        {value:"stockx", text:"StockX"}
+      ],
+      local: [
+        {value:"offerup", text:"OfferUp"},
+        {value:"fbmarket", text:"Facebook Marketplace"},
+        {value:"craigslist", text:"Craigslist"},
+        {value:"nextdoor", text:"Nextdoor"},
+        {value:"letgo", text:"Letgo"}
+      ],
+      store: [
+        {value:"gamestop", text:"GameStop"},
+        {value:"bestbuy", text:"BestBuy"},
+        {value:"amazon", text:"Amazon"},
+        {value:"walmart", text:"Walmart"},
+        {value:"target", text:"Target"},
+        {value:"costco", text:"Costco"},
+        {value:"samsclub", text:"Sam's Club"},
+        {value:"lowes", text:"Lowe's"},
+        {value:"homedepot", text:"Home Depot"}
+      ]
+    };
+
+    function updateSites(category) {
+      siteSelect.innerHTML = "";
+      sites[category].forEach(site => {
+        const opt = document.createElement("option");
+        opt.value = site.value;
+        opt.textContent = site.text;
+        siteSelect.appendChild(opt);
+      });
+    }
+
+    categorySelect.addEventListener("change", () => {
+      updateSites(categorySelect.value);
+    });
+
+    updateSites("online");
+
+    document.getElementById("flipToolCancel").onclick = function() {
+      document.getElementById("flipToolContainer").style.display = "none";
+    };
+
+    document.getElementById("flipToolSearch").onclick = function() {
+      var q = document.getElementById("flipToolInput").value.trim();
+      if (!q) {
+        alert("Enter a keyword or UPC");
+        return;
+      }
+
+      var site = siteSelect.value;
+      var u = "";
+
+      if (site === "ebay") u = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(q) + "&_sacat=0&LH_Sold=1&LH_Complete=1&LH_PrefLoc=1";
+      else if (site === "mercari") u = "https://www.mercari.com/search/?itemStatuses=2-3&keyword=" + encodeURIComponent(q);
+      else if (site === "watchcount") u = "https://www.watchcount.com/sold/" + encodeURIComponent(q) + "/-/all?lastSoldDate=7days&site=EBAY_US";
+      else if (site === "goat") u = "https://www.goat.com/search?query=" + encodeURIComponent(q);
+      else if (site === "stockx") u = "https://stockx.com/search?s=" + encodeURIComponent(q);
+
+      else if (site === "offerup") u = "https://offerup.com/search/?query=" + encodeURIComponent(q);
+      else if (site === "fbmarket") u = "https://www.facebook.com/marketplace/search/?query=" + encodeURIComponent(q);
+      else if (site === "craigslist") u = "https://www.craigslist.org/search/sss?query=" + encodeURIComponent(q);
+      else if (site === "nextdoor") u = "https://nextdoor.com/news_feed/?query=" + encodeURIComponent(q);
+      else if (site === "letgo") u = "https://www.letgo.com/arama?query_text=" + encodeURIComponent(q);
+
+      else if (site === "gamestop") u = "https://www.gamestop.com/search/?q=" + encodeURIComponent(q);
+      else if (site === "bestbuy") u = "https://www.bestbuy.com/site/searchpage.jsp?st=" + encodeURIComponent(q);
+      else if (site === "amazon") u = "https://www.amazon.com/s?k=" + encodeURIComponent(q);
+      else if (site === "walmart") u = "https://www.walmart.com/search/?query=" + encodeURIComponent(q);
+      else if (site === "target") u = "https://www.target.com/s?searchTerm=" + encodeURIComponent(q);
+      else if (site === "costco") u = "https://www.costco.com/CatalogSearch?keyword=" + encodeURIComponent(q);
+      else if (site === "samsclub") u = "https://www.samsclub.com/s/search="+encodeURIComponent(q);
+      else if (site === "lowes") u = "https://www.lowes.com/search?searchTerm=" + encodeURIComponent(q);
+      else if (site === "homedepot") u = "https://www.homedepot.com/s/" + encodeURIComponent(q);
+
+      if (u) window.open(u, "_blank");
+    };
+  </script>
+</body>
+</html>
