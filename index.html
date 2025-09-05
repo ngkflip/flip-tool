@@ -42,6 +42,11 @@
       margin-top: 12px;
       margin-bottom: 4px;
     }
+    #flipToolContainer label {
+      display: block;
+      margin: 6px 0;
+      color: #ffffff !important;
+    }
     #flipToolContainer input[type=text],
     #flipToolContainer select {
       width: 100%;
@@ -55,27 +60,25 @@
     #flipToolContainer select option {
       color: #000;
     }
-
-    /* ChatGPT-like buttons */
     #flipToolContainer button {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ececec;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 8px 14px;
       margin: 6px;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      font-size: 14px;
+      background: #2d2d2d;
+      color: #e0e0e0;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     #flipToolContainer button:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: #3c3c3c;
       color: #fff;
     }
 
-    /* === Sheet Section styled like ChatGPT side panel === */
+    /* === Sheet Section === */
     #sheetContainer {
-      display: none;
+      display: none; /* hidden until button is clicked */
       margin: 20px auto 0 auto;
       max-width: 900px;
       background: rgba(0, 0, 0, 0.65);
@@ -85,7 +88,7 @@
       color: #fff;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       position: relative;
-      top: 420px;
+      top: 420px; /* positions it just under Flip Tool */
     }
     #sheetContainer h2 {
       text-align: center;
@@ -99,22 +102,17 @@
     #sheetTable {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
     }
     #sheetTable th, #sheetTable td {
-      border: none;
+      border: 1px solid rgba(255,255,255,0.2);
       padding: 10px;
       text-align: left;
     }
     #sheetTable th {
-      color: #aaa;
-      font-weight: 500;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.1);
+      font-weight: bold;
     }
-    #sheetTable tr {
-      transition: background 0.2s ease;
-    }
-    #sheetTable tr:hover {
+    #sheetTable tr:nth-child(even) {
       background: rgba(255,255,255,0.05);
     }
     #sheetTable a {
@@ -125,21 +123,47 @@
       text-decoration: underline;
     }
 
-    /* Show more button */
-    #showMoreBtn {
-      margin-top: 12px;
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.08);
-      color: #ececec;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    /* Fade-out + toggle for 5-row view */
+    #sheetTableWrapper {
+      max-height: 260px; /* ~5 rows */
+      overflow: hidden;
+      position: relative;
+      transition: max-height 0.4s ease;
     }
-    #showMoreBtn:hover {
-      background: rgba(255, 255, 255, 0.15);
+    #sheetTableWrapper.expanded {
+      max-height: 1000px; /* expand big enough */
+    }
+    #sheetTableFade {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.85));
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #sheetTableWrapper.expanded #sheetTableFade {
+      opacity: 0;
+    }
+
+    #toggleViewBtn {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #2d2d2d;
+      color: #e0e0e0;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease, color 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #toggleViewBtn:hover {
+      background: #3c3c3c;
       color: #fff;
     }
   </style>
@@ -160,11 +184,7 @@
 
     <label>
       <strong>Choose Category:</strong>
-      <select id="flipToolCategory">
-        <option value="online">Online Flip</option>
-        <option value="local">Local Flip</option>
-        <option value="store">Store Search</option>
-      </select>
+      <select id="flipToolCategory"></select>
     </label>
 
     <label>
@@ -186,20 +206,22 @@
            alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
       Live Product Leads
     </h2>
-    <table id="sheetTable">
-      <thead>
-        <tr>
-          <th>SKU - UPC</th>
-          <th>Product Title</th>
-          <th>Store Link</th>
-          <th>eBay Comps</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div style="text-align:center;">
-      <button id="showMoreBtn" style="display:none;">Show More</button>
+
+    <div id="sheetTableWrapper">
+      <table id="sheetTable">
+        <thead>
+          <tr>
+            <th>SKU - UPC</th>
+            <th>Product Title</th>
+            <th>Store Link</th>
+            <th>eBay Comps</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="sheetTableFade"></div>
     </div>
+    <button id="toggleViewBtn">View More</button>
   </div>
 
   <!-- === Scripts === -->
@@ -208,7 +230,6 @@
     const siteSelect = document.getElementById("flipToolSite");
     const leadsBtn = document.getElementById("flipToolLeads");
     const sheetContainer = document.getElementById("sheetContainer");
-    const showMoreBtn = document.getElementById("showMoreBtn");
 
     const sites = {
       online: [
@@ -266,9 +287,9 @@
       var site = siteSelect.value;
       var u = "";
 
-      if (site === "ebay") u = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(q) + "&_sacat=0&LH_Sold=1&LH_Complete=1&LH_PrefLoc=1";
+      if (site === "ebay") u = "https://www.ebay.com/sch/i.html?_nkw=" + encodeURIComponent(q) + "&LH_Sold=1&LH_Complete=1";
       else if (site === "mercari") u = "https://www.mercari.com/search/?itemStatuses=2-3&keyword=" + encodeURIComponent(q);
-      else if (site === "watchcount") u = "https://www.watchcount.com/sold/" + encodeURIComponent(q) + "/-/all?lastSoldDate=7days&site=EBAY_US";
+      else if (site === "watchcount") u = "https://www.watchcount.com/sold/" + encodeURIComponent(q) + "/-/all";
       else if (site === "goat") u = "https://www.goat.com/search?query=" + encodeURIComponent(q);
       else if (site === "stockx") u = "https://stockx.com/search?s=" + encodeURIComponent(q);
       else if (site === "offerup") u = "https://offerup.com/search/?query=" + encodeURIComponent(q);
@@ -291,22 +312,14 @@
 
     // === Google Sheet Fetch ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
-    let allRows = [];
-    let showingAll = false;
 
     async function loadSheetData() {
       const res = await fetch(sheetUrl);
       const text = await res.text();
       const rows = text.trim().split("\n").map(r => r.split(","));
-      allRows = rows.slice(1); // skip header
-      renderRows();
-    }
-
-    function renderRows() {
       const tbody = document.querySelector("#sheetTable tbody");
       tbody.innerHTML = "";
-      const rowsToShow = showingAll ? allRows : allRows.slice(0, 5);
-      rowsToShow.forEach(r => {
+      rows.slice(1).forEach(r => {
         let tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${r[0]}</td>
@@ -316,19 +329,7 @@
         `;
         tbody.appendChild(tr);
       });
-
-      if (allRows.length > 5) {
-        showMoreBtn.style.display = "inline-block";
-        showMoreBtn.textContent = showingAll ? "Show Less" : "Show More";
-      } else {
-        showMoreBtn.style.display = "none";
-      }
     }
-
-    showMoreBtn.onclick = () => {
-      showingAll = !showingAll;
-      renderRows();
-    };
 
     // View Leads button
     leadsBtn.onclick = function() {
@@ -336,6 +337,14 @@
       if (sheetContainer.style.display === "block") {
         loadSheetData();
       }
+    };
+
+    // View More / Less toggle
+    const toggleBtn = document.getElementById("toggleViewBtn");
+    const wrapper = document.getElementById("sheetTableWrapper");
+    toggleBtn.onclick = function() {
+      wrapper.classList.toggle("expanded");
+      toggleBtn.textContent = wrapper.classList.contains("expanded") ? "View Less" : "View More";
     };
   </script>
 </body>
