@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Full Send Flip Tool 🤖🔥</title>
+  <title>Neo's Flip Tool 🤖</title>
   <style>
     body {
       font-family: Roboto, Arial, sans-serif;
-      background: url("https://static.md/a19546e631ec1e67226c0912365207c6.gif") center/cover no-repeat fixed;
+      background: url("https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2Z3NmtjaTdhMDRud3hueWlyajF2ZGZ2eTR4anJ3dmY5MGlxdzZrNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/39en7XaNZvI6nGQym0/giphy.gif") center/cover no-repeat fixed;
       color: #fff;
       margin: 0;
       padding: 0;
     }
 
-    /* === Flip Tool === */
+    /* === Flip Tool & Leads === */
     #flipToolContainer, #leadsContainer {
       position: fixed;
       left: 50%;
@@ -24,20 +24,37 @@
       z-index: 999999;
       color: #fff !important;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      width: 380px;
+      cursor: default;
     }
 
-    #flipToolContainer { top: 50%; transform: translate(-50%, -50%); }
-    #leadsContainer { display: none; top: calc(50% + 220px); }
+    /* Flip Tool → top center */
+    #flipToolContainer {
+      top: 40px;
+      width: 420px;
+      transform: translateX(-50%);
+    }
 
+    /* Leads Popup → wider, under Flip Tool */
+    #leadsContainer {
+      display: none;
+      top: 120px;
+      width: 700px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    /* Drag handles */
     #flipToolContainer h2, #leadsContainer h2 {
-      margin-top: 0;
+      margin: -20px -20px 10px -20px; /* stretch header */
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px 16px 0 0;
       color: #ffffff !important;
-      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      cursor: move; /* drag cursor */
     }
 
     #flipToolContainer label strong, #leadsContainer label strong {
@@ -45,12 +62,6 @@
       display: block;
       margin-top: 12px;
       margin-bottom: 4px;
-    }
-
-    #flipToolContainer label, #leadsContainer label {
-      display: block;
-      margin: 6px 0;
-      color: #ffffff !important;
     }
 
     #flipToolContainer input[type=text],
@@ -87,15 +98,8 @@
       color: #fff;
     }
 
-    #flipToolSearch, #leadsSearch {
-      background: #28a745;
-      color: #fff;
-    }
-
-    #flipToolCancel, #leadsClose {
-      background: #dc3545;
-      color: #fff;
-    }
+    #flipToolSearch { background: #28a745; color: #fff; }
+    #leadsClose { background: #dc3545; color: #fff; margin-left:auto; }
 
     /* === Sheet Table === */
     #sheetTable {
@@ -125,10 +129,9 @@
 
     /* Column width fixes */
     #sheetTable th:nth-child(1),
-    #sheetTable td:nth-child(1) { max-width: 120px; }
+    #sheetTable td:nth-child(1) { max-width: 160px; }
     #sheetTable th:nth-child(2),
-    #sheetTable td:nth-child(2) { max-width: 400px; }
-
+    #sheetTable td:nth-child(2) { max-width: 450px; }
   </style>
 </head>
 <body>
@@ -172,7 +175,7 @@
       <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExank2Y290dnI0YzRlbzJueWk3ZTFqMHR6NXh1ZGhpeW9oYjJtNXQwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cfQNFC8e6Ds8QvWIuK/giphy.gif"
            alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
       Live Product Leads
-      <button id="leadsClose" style="margin-left:auto;">X</button>
+      <button id="leadsClose">X</button>
     </h2>
     <div id="leadsTableWrapper">
       <table id="sheetTable">
@@ -294,6 +297,39 @@
         tbody.appendChild(tr);
       });
     }
+
+    // === Make elements draggable ===
+    function makeDraggable(container) {
+      const header = container.querySelector("h2");
+      let offsetX = 0, offsetY = 0, isDown = false;
+
+      header.onmousedown = function(e) {
+        isDown = true;
+        offsetX = e.clientX - container.offsetLeft;
+        offsetY = e.clientY - container.offsetTop;
+        document.onmousemove = drag;
+        document.onmouseup = stopDrag;
+      };
+
+      function drag(e) {
+        if (!isDown) return;
+        container.style.left = e.clientX - offsetX + "px";
+        container.style.top = e.clientY - offsetY + "px";
+        container.style.transform = "none"; // disable center snap
+      }
+
+      function stopDrag() {
+        isDown = false;
+        document.onmousemove = null;
+        document.onmouseup = null;
+      }
+    }
+
+    // Apply draggable to both tools
+    window.onload = function() {
+      makeDraggable(document.getElementById("flipToolContainer"));
+      makeDraggable(document.getElementById("leadsContainer"));
+    };
   </script>
 
 </body>
