@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Neo's Flip Tool 🤖</title>
+  <title>Full Send Flip Tool 🤖🔥</title>
   <style>
     body {
       font-family: Roboto, Arial, sans-serif;
-      background: url("https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2Z3NmtjaTdhMDRud3hueWlyajF2ZGZ2eTR4anJ3dmY5MGlxdzZrNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/39en7XaNZvI6nGQym0/giphy.gif") center/cover no-repeat fixed;
+      background: url("https://static.md/a19546e631ec1e67226c0912365207c6.gif") center/cover no-repeat fixed;
       color: #fff;
       margin: 0;
       padding: 0;
@@ -24,37 +24,31 @@
       z-index: 999999;
       color: #fff !important;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      width: 600px;
       cursor: default;
+
+      /* 👇 resizable */
+      resize: both;
+      overflow: auto;
+      min-width: 300px;
+      min-height: 150px;
     }
 
-    /* Flip Tool → top center */
-    #flipToolContainer {
-      top: 40px;
-      width: 420px;
-      transform: translateX(-50%);
-    }
+    /* Flip tool top-centered */
+    #flipToolContainer { top: 20px; }
 
-    /* Leads Popup → wider, under Flip Tool */
-    #leadsContainer {
-      display: none;
-      top: 120px;
-      width: 700px;
-      max-height: 60vh;
-      overflow-y: auto;
-    }
+    /* Leads popup under flip tool */
+    #leadsContainer { display: none; top: 300px; }
 
-    /* Drag handles */
     #flipToolContainer h2, #leadsContainer h2 {
-      margin: -20px -20px 10px -20px; /* stretch header */
-      padding: 10px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 16px 16px 0 0;
+      margin-top: 0;
       color: #ffffff !important;
+      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      cursor: move; /* drag cursor */
+      cursor: move; /* draggable area */
     }
 
     #flipToolContainer label strong, #leadsContainer label strong {
@@ -62,6 +56,12 @@
       display: block;
       margin-top: 12px;
       margin-bottom: 4px;
+    }
+
+    #flipToolContainer label, #leadsContainer label {
+      display: block;
+      margin: 6px 0;
+      color: #ffffff !important;
     }
 
     #flipToolContainer input[type=text],
@@ -98,8 +98,15 @@
       color: #fff;
     }
 
-    #flipToolSearch { background: #28a745; color: #fff; }
-    #leadsClose { background: #dc3545; color: #fff; margin-left:auto; }
+    #flipToolSearch, #leadsSearch {
+      background: #28a745;
+      color: #fff;
+    }
+
+    #flipToolCancel, #leadsClose {
+      background: #dc3545;
+      color: #fff;
+    }
 
     /* === Sheet Table === */
     #sheetTable {
@@ -129,9 +136,38 @@
 
     /* Column width fixes */
     #sheetTable th:nth-child(1),
-    #sheetTable td:nth-child(1) { max-width: 160px; }
+    #sheetTable td:nth-child(1) { max-width: 120px; }
     #sheetTable th:nth-child(2),
-    #sheetTable td:nth-child(2) { max-width: 450px; }
+    #sheetTable td:nth-child(2) { max-width: 400px; }
+
+    /* === Custom Scrollbars (WebKit browsers) === */
+    #flipToolContainer::-webkit-scrollbar,
+    #leadsContainer::-webkit-scrollbar,
+    #sheetTable::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    #flipToolContainer::-webkit-scrollbar-track,
+    #leadsContainer::-webkit-scrollbar-track,
+    #sheetTable::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    #flipToolContainer::-webkit-scrollbar-thumb,
+    #leadsContainer::-webkit-scrollbar-thumb,
+    #sheetTable::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 8px;
+      border: 2px solid rgba(0,0,0,0.4);
+    }
+
+    #flipToolContainer::-webkit-scrollbar-thumb:hover,
+    #leadsContainer::-webkit-scrollbar-thumb:hover,
+    #sheetTable::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.6);
+    }
   </style>
 </head>
 <body>
@@ -139,7 +175,7 @@
   <!-- === Flip Tool === -->
   <div id="flipToolContainer">
     <h2>
-      <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHVxMGtocWl5cmZ2enJtbndmODYycnE1YTkzdTVkZzFjeWgxMTFhcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Y38iUdpAHYtBySPxGp/giphy.gif"
+      <img src="https://media1.giphy.com/media/Y38iUdpAHYtBySPxGp/giphy.gif"
            alt="Robot" style="height:32px;vertical-align:middle;">
       Full Send Flip Tool
     </h2>
@@ -172,10 +208,10 @@
   <!-- === Leads Floating Tool === -->
   <div id="leadsContainer">
     <h2>
-      <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExank2Y290dnI0YzRlbzJueWk3ZTFqMHR6NXh1ZGhpeW9oYjJtNXQwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cfQNFC8e6Ds8QvWIuK/giphy.gif"
+      <img src="https://media3.giphy.com/media/cfQNFC8e6Ds8QvWIuK/giphy.gif"
            alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
       Live Product Leads
-      <button id="leadsClose">X</button>
+      <button id="leadsClose" style="margin-left:auto;">X</button>
     </h2>
     <div id="leadsTableWrapper">
       <table id="sheetTable">
@@ -274,8 +310,29 @@
       leadsContainer.style.display = leadsContainer.style.display === "block" ? "none" : "block";
       if (leadsContainer.style.display === "block") loadSheetData();
     };
-
     leadsClose.onclick = function() { leadsContainer.style.display = "none"; };
+
+    // === Draggable ===
+    function makeDraggable(el) {
+      const header = el.querySelector("h2");
+      let offsetX = 0, offsetY = 0, isDown = false;
+
+      header.onmousedown = (e) => {
+        isDown = true;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+        document.onmousemove = (e) => {
+          if (!isDown) return;
+          el.style.left = (e.clientX - offsetX) + "px";
+          el.style.top = (e.clientY - offsetY) + "px";
+          el.style.transform = "none"; // stop centering when dragged
+        };
+        document.onmouseup = () => { isDown = false; };
+      };
+    }
+
+    makeDraggable(document.getElementById("flipToolContainer"));
+    makeDraggable(document.getElementById("leadsContainer"));
 
     // === Google Sheet Fetch ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
@@ -297,39 +354,6 @@
         tbody.appendChild(tr);
       });
     }
-
-    // === Make elements draggable ===
-    function makeDraggable(container) {
-      const header = container.querySelector("h2");
-      let offsetX = 0, offsetY = 0, isDown = false;
-
-      header.onmousedown = function(e) {
-        isDown = true;
-        offsetX = e.clientX - container.offsetLeft;
-        offsetY = e.clientY - container.offsetTop;
-        document.onmousemove = drag;
-        document.onmouseup = stopDrag;
-      };
-
-      function drag(e) {
-        if (!isDown) return;
-        container.style.left = e.clientX - offsetX + "px";
-        container.style.top = e.clientY - offsetY + "px";
-        container.style.transform = "none"; // disable center snap
-      }
-
-      function stopDrag() {
-        isDown = false;
-        document.onmousemove = null;
-        document.onmouseup = null;
-      }
-    }
-
-    // Apply draggable to both tools
-    window.onload = function() {
-      makeDraggable(document.getElementById("flipToolContainer"));
-      makeDraggable(document.getElementById("leadsContainer"));
-    };
   </script>
 
 </body>
