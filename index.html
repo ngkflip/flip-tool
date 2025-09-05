@@ -71,22 +71,14 @@
     #flipToolContainer button:hover {
       transform: scale(1.05);
     }
-    #flipToolSearch {
-      background: #28a745;
-      color: #fff;
-    }
-    #flipToolCancel {
-      background: #dc3545;
-      color: #fff;
-    }
-    #flipToolLeads {
-      background: #007bff;
-      color: #fff;
-    }
+    #flipToolSearch { background: #28a745; color: #fff; }
+    #flipToolCancel { background: #dc3545; color: #fff; }
+    #flipToolLeads  { background: #007bff; color: #fff; }
 
     /* === Sheet Section === */
     #sheetContainer {
-      margin: 40px auto;
+      display: none; /* hidden until button is clicked */
+      margin: 20px auto 0 auto;
       max-width: 900px;
       background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(12px);
@@ -94,6 +86,8 @@
       border-radius: 16px;
       color: #fff;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      position: relative;
+      top: 420px; /* positions it just under Flip Tool */
     }
     #sheetContainer h2 {
       text-align: center;
@@ -188,6 +182,8 @@
   <script>
     const categorySelect = document.getElementById("flipToolCategory");
     const siteSelect = document.getElementById("flipToolSite");
+    const leadsBtn = document.getElementById("flipToolLeads");
+    const sheetContainer = document.getElementById("sheetContainer");
 
     const sites = {
       online: [
@@ -226,24 +222,22 @@
         siteSelect.appendChild(opt);
       });
     }
-
-    categorySelect.addEventListener("change", () => {
-      updateSites(categorySelect.value);
-    });
-
+    categorySelect.addEventListener("change", () => updateSites(categorySelect.value));
     updateSites("online");
 
+    // Cancel button
     document.getElementById("flipToolCancel").onclick = function() {
       document.getElementById("flipToolContainer").style.display = "none";
+      sheetContainer.style.display = "none";
     };
 
+    // Search logic
     document.getElementById("flipToolSearch").onclick = function() {
       var q = document.getElementById("flipToolInput").value.trim();
       if (!q) {
         alert("Enter a keyword or UPC");
         return;
       }
-
       var site = siteSelect.value;
       var u = "";
 
@@ -252,29 +246,22 @@
       else if (site === "watchcount") u = "https://www.watchcount.com/sold/" + encodeURIComponent(q) + "/-/all?lastSoldDate=7days&site=EBAY_US";
       else if (site === "goat") u = "https://www.goat.com/search?query=" + encodeURIComponent(q);
       else if (site === "stockx") u = "https://stockx.com/search?s=" + encodeURIComponent(q);
-
       else if (site === "offerup") u = "https://offerup.com/search/?query=" + encodeURIComponent(q);
       else if (site === "fbmarket") u = "https://www.facebook.com/marketplace/search/?query=" + encodeURIComponent(q);
       else if (site === "craigslist") u = "https://www.craigslist.org/search/sss?query=" + encodeURIComponent(q);
       else if (site === "nextdoor") u = "https://nextdoor.com/news_feed/?query=" + encodeURIComponent(q);
       else if (site === "letgo") u = "https://www.letgo.com/arama?query_text=" + encodeURIComponent(q);
-
       else if (site === "gamestop") u = "https://www.gamestop.com/search/?q=" + encodeURIComponent(q);
       else if (site === "bestbuy") u = "https://www.bestbuy.com/site/searchpage.jsp?st=" + encodeURIComponent(q);
       else if (site === "amazon") u = "https://www.amazon.com/s?k=" + encodeURIComponent(q);
       else if (site === "walmart") u = "https://www.walmart.com/search/?query=" + encodeURIComponent(q);
       else if (site === "target") u = "https://www.target.com/s?searchTerm=" + encodeURIComponent(q);
       else if (site === "costco") u = "https://www.costco.com/CatalogSearch?keyword=" + encodeURIComponent(q);
-      else if (site === "samsclub") u = "https://www.samsclub.com/s/search="+encodeURIComponent(q);
+      else if (site === "samsclub") u = "https://www.samsclub.com/s/search=" + encodeURIComponent(q);
       else if (site === "lowes") u = "https://www.lowes.com/search?searchTerm=" + encodeURIComponent(q);
       else if (site === "homedepot") u = "https://www.homedepot.com/s/" + encodeURIComponent(q);
 
       if (u) window.open(u, "_blank");
-    };
-
-    // NEW: View Leads button
-    document.getElementById("flipToolLeads").onclick = function() {
-      document.getElementById("sheetContainer").scrollIntoView({ behavior: "smooth" });
     };
 
     // === Google Sheet Fetch ===
@@ -286,7 +273,6 @@
       const rows = text.trim().split("\n").map(r => r.split(","));
       const tbody = document.querySelector("#sheetTable tbody");
       tbody.innerHTML = "";
-
       rows.slice(1).forEach(r => {
         let tr = document.createElement("tr");
         tr.innerHTML = `
@@ -299,7 +285,13 @@
       });
     }
 
-    loadSheetData();
+    // View Leads button
+    leadsBtn.onclick = function() {
+      sheetContainer.style.display = sheetContainer.style.display === "block" ? "none" : "block";
+      if (sheetContainer.style.display === "block") {
+        loadSheetData();
+      }
+    };
   </script>
 </body>
 </html>
