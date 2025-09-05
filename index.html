@@ -42,11 +42,6 @@
       margin-top: 12px;
       margin-bottom: 4px;
     }
-    #flipToolContainer label {
-      display: block;
-      margin: 6px 0;
-      color: #ffffff !important;
-    }
     #flipToolContainer input[type=text],
     #flipToolContainer select {
       width: 100%;
@@ -60,24 +55,27 @@
     #flipToolContainer select option {
       color: #000;
     }
+
+    /* ChatGPT-like buttons */
     #flipToolContainer button {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ececec;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 14px;
       margin: 6px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-size: 14px;
       cursor: pointer;
-      transition: 0.25s;
+      transition: all 0.2s ease;
     }
     #flipToolContainer button:hover {
-      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
     }
-    #flipToolSearch { background: #28a745; color: #fff; }
-    #flipToolCancel { background: #dc3545; color: #fff; }
-    #flipToolLeads  { background: #007bff; color: #fff; }
 
-    /* === Sheet Section === */
+    /* === Sheet Section styled like ChatGPT side panel === */
     #sheetContainer {
-      display: none; /* hidden until button is clicked */
+      display: none;
       margin: 20px auto 0 auto;
       max-width: 900px;
       background: rgba(0, 0, 0, 0.65);
@@ -87,7 +85,7 @@
       color: #fff;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       position: relative;
-      top: 420px; /* positions it just under Flip Tool */
+      top: 420px;
     }
     #sheetContainer h2 {
       text-align: center;
@@ -101,17 +99,22 @@
     #sheetTable {
       width: 100%;
       border-collapse: collapse;
+      font-size: 14px;
     }
     #sheetTable th, #sheetTable td {
-      border: 1px solid rgba(255,255,255,0.2);
+      border: none;
       padding: 10px;
       text-align: left;
     }
     #sheetTable th {
-      background: rgba(255,255,255,0.1);
-      font-weight: bold;
+      color: #aaa;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    #sheetTable tr:nth-child(even) {
+    #sheetTable tr {
+      transition: background 0.2s ease;
+    }
+    #sheetTable tr:hover {
       background: rgba(255,255,255,0.05);
     }
     #sheetTable a {
@@ -120,6 +123,24 @@
     }
     #sheetTable a:hover {
       text-decoration: underline;
+    }
+
+    /* Show more button */
+    #showMoreBtn {
+      margin-top: 12px;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ececec;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    #showMoreBtn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
     }
   </style>
 </head>
@@ -176,6 +197,9 @@
       </thead>
       <tbody></tbody>
     </table>
+    <div style="text-align:center;">
+      <button id="showMoreBtn" style="display:none;">Show More</button>
+    </div>
   </div>
 
   <!-- === Scripts === -->
@@ -184,6 +208,7 @@
     const siteSelect = document.getElementById("flipToolSite");
     const leadsBtn = document.getElementById("flipToolLeads");
     const sheetContainer = document.getElementById("sheetContainer");
+    const showMoreBtn = document.getElementById("showMoreBtn");
 
     const sites = {
       online: [
@@ -266,14 +291,22 @@
 
     // === Google Sheet Fetch ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
+    let allRows = [];
+    let showingAll = false;
 
     async function loadSheetData() {
       const res = await fetch(sheetUrl);
       const text = await res.text();
       const rows = text.trim().split("\n").map(r => r.split(","));
+      allRows = rows.slice(1); // skip header
+      renderRows();
+    }
+
+    function renderRows() {
       const tbody = document.querySelector("#sheetTable tbody");
       tbody.innerHTML = "";
-      rows.slice(1).forEach(r => {
+      const rowsToShow = showingAll ? allRows : allRows.slice(0, 5);
+      rowsToShow.forEach(r => {
         let tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${r[0]}</td>
@@ -283,7 +316,19 @@
         `;
         tbody.appendChild(tr);
       });
+
+      if (allRows.length > 5) {
+        showMoreBtn.style.display = "inline-block";
+        showMoreBtn.textContent = showingAll ? "Show Less" : "Show More";
+      } else {
+        showMoreBtn.style.display = "none";
+      }
     }
+
+    showMoreBtn.onclick = () => {
+      showingAll = !showingAll;
+      renderRows();
+    };
 
     // View Leads button
     leadsBtn.onclick = function() {
