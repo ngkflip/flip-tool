@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Full Send Flip Tool 🤖🔥</title>
+  <title>Full Send Flip Tool 🤖</title>
   <style>
     body {
       font-family: Roboto, Arial, sans-serif;
@@ -225,6 +225,9 @@
         </thead>
         <tbody></tbody>
       </table>
+      <div style="text-align:center;margin-top:10px;">
+        <button id="showMoreBtn" style="display:none;">Show More</button>
+      </div>
     </div>
   </div>
 
@@ -235,6 +238,7 @@
     const leadsBtn = document.getElementById("flipToolLeads");
     const leadsContainer = document.getElementById("leadsContainer");
     const leadsClose = document.getElementById("leadsClose");
+    const showMoreBtn = document.getElementById("showMoreBtn");
 
     const sites = {
       online: [
@@ -334,16 +338,23 @@
     makeDraggable(document.getElementById("flipToolContainer"));
     makeDraggable(document.getElementById("leadsContainer"));
 
-    // === Google Sheet Fetch ===
+    // === Google Sheet Fetch + Limit Rows ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
+    let sheetRows = [];
+    let visibleCount = 10;
 
     async function loadSheetData() {
       const res = await fetch(sheetUrl);
       const text = await res.text();
-      const rows = text.trim().split("\n").map(r => r.split(","));
+      sheetRows = text.trim().split("\n").map(r => r.split(",")).slice(1);
+      visibleCount = 10;
+      renderTable();
+    }
+
+    function renderTable() {
       const tbody = document.querySelector("#sheetTable tbody");
       tbody.innerHTML = "";
-      rows.slice(1).forEach(r => {
+      sheetRows.slice(0, visibleCount).forEach(r => {
         let tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${r[0]}</td>
@@ -353,7 +364,13 @@
         `;
         tbody.appendChild(tr);
       });
+      showMoreBtn.style.display = visibleCount < sheetRows.length ? "inline-block" : "none";
     }
+
+    showMoreBtn.onclick = () => {
+      visibleCount += 10;
+      renderTable();
+    };
   </script>
 
 </body>
