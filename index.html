@@ -2,18 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Full Send Flip Tool 🤖</title>
+  <title>NGK - Flip Tool 🤖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Roboto, Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: url("https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2Z3NmtjaTdhMDRud3hueWlyajF2ZGZ2eTR4anJ3dmY5MGlxdzZrNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/39en7XaNZvI6nGQym0/giphy.gif") center/cover no-repeat fixed;
       color: #fff;
       margin: 0;
       padding: 0;
     }
 
-    /* === Flip Tool & Leads === */
-    #flipToolContainer, #leadsContainer {
+    /* === Flip Tool (Updated) === */
+    #flipToolContainer {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      padding: 20px;
+      border-radius: 16px;
+      z-index: 999999;
+      cursor: default;
+      resize: both;
+      overflow: auto;
+      min-width: 300px;
+      min-height: 150px;
+
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmhjd3oxOHNhMHF2MHJhbTNka3h2dGZpZnZpZ3R1czYxMjkxMW01cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TjndRLCJ9KkF5etqAY/giphy.gif'); /* 👈 Replace with client image */
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    #flipToolContainer h2 {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      margin-top: 0;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: move;
+    }
+    #flipToolContainer h2 img { vertical-align: middle; }
+
+    #flipToolContainer label strong {
+      color: #ccc;
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+    #flipToolContainer label { display:block; margin:6px 0; color:#fff; }
+
+    #flipToolContainer input[type=text],
+    #flipToolContainer select {
+      width:100%;
+      padding:8px;
+      margin:10px 0;
+      background:rgba(255,255,255,0.15);
+      border:1px solid #fff;
+      border-radius:8px;
+      color:#fff;
+      font-family:'Montserrat', sans-serif;
+      font-size:16px;
+    }
+    #flipToolContainer select option { color:#000; }
+
+    #flipToolContainer button {
+      font-family:'Montserrat', sans-serif;
+      font-weight:600;
+      font-size:16px;
+      padding:10px 18px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color:#fff;
+      transition: transform 0.2s ease, background 0.3s ease;
+      margin: 6px;
+    }
+    #flipToolContainer button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #218838, #17a2b8);
+    }
+    #cancelFlipTool { background: linear-gradient(135deg, #dc3545, #e74c3c); }
+
+    /* === Leads Floating Tool (unchanged) === */
+    #leadsContainer {
       position: fixed;
       left: 50%;
       transform: translateX(-50%);
@@ -26,21 +108,14 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       width: 600px;
       cursor: default;
-
-      /* 👇 resizable */
       resize: both;
       overflow: auto;
       min-width: 300px;
       min-height: 150px;
+      display: none;
+      top: 300px;
     }
-
-    /* Flip tool top-centered */
-    #flipToolContainer { top: 20px; }
-
-    /* Leads popup under flip tool */
-    #leadsContainer { display: none; top: 300px; }
-
-    #flipToolContainer h2, #leadsContainer h2 {
+    #leadsContainer h2 {
       margin-top: 0;
       color: #ffffff !important;
       text-align: center;
@@ -48,145 +123,34 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      cursor: move; /* draggable area */
+      cursor: move;
     }
+    #leadsClose { background: #dc3545; color:#fff; }
 
-    #flipToolContainer label strong, #leadsContainer label strong {
-      color: #cccccc !important;
-      display: block;
-      margin-top: 12px;
-      margin-bottom: 4px;
-    }
-
-    #flipToolContainer label, #leadsContainer label {
-      display: block;
-      margin: 6px 0;
-      color: #ffffff !important;
-    }
-
-    #flipToolContainer input[type=text],
-    #flipToolContainer select,
-    #leadsContainer select {
-      width: 100%;
-      padding: 8px;
-      margin: 10px 0;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid #fff;
-      border-radius: 8px;
-      color: #fff;
-    }
-
-    #flipToolContainer select option,
-    #leadsContainer select option {
-      color: #000;
-    }
-
-    #flipToolContainer button, #leadsContainer button {
-      margin: 6px;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      background: #2d2d2d;
-      color: #e0e0e0;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    #flipToolContainer button:hover, #leadsContainer button:hover {
-      background: #3c3c3c;
-      color: #fff;
-    }
-
-    #flipToolSearch, #leadsSearch {
-      background: #28a745;
-      color: #fff;
-    }
-
-    #flipToolCancel, #leadsClose {
-      background: #dc3545;
-      color: #fff;
-    }
-
-    /* === Sheet Table === */
-    #sheetTable {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    #sheetTable th, #sheetTable td {
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 10px;
-      text-align: left;
-      word-wrap: break-word;
-    }
-    #sheetTable th {
-      background: rgba(255,255,255,0.1);
-      font-weight: bold;
-    }
-    #sheetTable tr:nth-child(even) {
-      background: rgba(255,255,255,0.05);
-    }
-    #sheetTable a {
-      color: #4da6ff;
-      text-decoration: none;
-    }
-    #sheetTable a:hover {
-      text-decoration: underline;
-    }
-
-    /* Column width fixes */
-    #sheetTable th:nth-child(1),
-    #sheetTable td:nth-child(1) { max-width: 120px; }
-    #sheetTable th:nth-child(2),
-    #sheetTable td:nth-child(2) { max-width: 400px; }
-
-    /* === Custom Scrollbars (WebKit browsers) === */
-    #flipToolContainer::-webkit-scrollbar,
-    #leadsContainer::-webkit-scrollbar,
-    #sheetTable::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-
-    #flipToolContainer::-webkit-scrollbar-track,
-    #leadsContainer::-webkit-scrollbar-track,
-    #sheetTable::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-    }
-
-    #flipToolContainer::-webkit-scrollbar-thumb,
-    #leadsContainer::-webkit-scrollbar-thumb,
-    #sheetTable::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.3);
-      border-radius: 8px;
-      border: 2px solid rgba(0,0,0,0.4);
-    }
-
-    #flipToolContainer::-webkit-scrollbar-thumb:hover,
-    #leadsContainer::-webkit-scrollbar-thumb:hover,
-    #sheetTable::-webkit-scrollbar-thumb:hover {
-      background: rgba(255,255,255,0.6);
-    }
+    /* === Table (unchanged) === */
+    #sheetTable { width: 100%; border-collapse: collapse; }
+    #sheetTable th, #sheetTable td { border: 1px solid rgba(255,255,255,0.2); padding: 10px; text-align: left; word-wrap: break-word; }
+    #sheetTable th { background: rgba(255,255,255,0.1); font-weight: bold; }
+    #sheetTable tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    #sheetTable a { color: #4da6ff; text-decoration: none; }
+    #sheetTable a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-  <!-- === Flip Tool === -->
+  <!-- === Flip Tool (Updated UI) === -->
   <div id="flipToolContainer">
     <h2>
-      <img src="https://media1.giphy.com/media/Y38iUdpAHYtBySPxGp/giphy.gif"
-           alt="Robot" style="height:32px;vertical-align:middle;">
-      Full Send Flip Tool
+      <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmhjd3oxOHNhMHF2MHJhbTNka3h2dGZpZnZpZ3R1czYxMjkxMW01cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TjndRLCJ9KkF5etqAY/giphy.gif" alt="Client Logo" style="margin-right:8px;height:60px;">
+      Flip Tool
+      <img src="https://media1.giphy.com/media/Y38iUdpAHYtBySPxGp/giphy.gif" alt="Robot" style="margin-left:8px;height:32px;">
     </h2>
 
-    <label>
-      <strong>Enter Search:</strong>
+    <label><strong>Enter Search:</strong>
       <input type="text" id="flipToolInput" placeholder="Enter keyword or UPC">
     </label>
 
-    <label>
-      <strong>Choose Category:</strong>
+    <label><strong>Choose Category:</strong>
       <select id="flipToolCategory">
         <option value="online">Online Flip</option>
         <option value="local">Local Flip</option>
@@ -194,22 +158,21 @@
       </select>
     </label>
 
-    <label>
-      <strong>Choose Site:</strong>
+    <label><strong>Choose Site:</strong>
       <select id="flipToolSite"></select>
     </label>
 
     <div style="text-align:center;margin-top:15px;">
       <button id="flipToolSearch">Search</button>
       <button id="flipToolLeads">View Leads</button>
+      <button id="cancelFlipTool">Cancel</button>
     </div>
   </div>
 
-  <!-- === Leads Floating Tool === -->
+  <!-- === Leads Floating Tool (unchanged) === -->
   <div id="leadsContainer">
     <h2>
-      <img src="https://media3.giphy.com/media/cfQNFC8e6Ds8QvWIuK/giphy.gif"
-           alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
+      <img src="https://media3.giphy.com/media/cfQNFC8e6Ds8QvWIuK/giphy.gif" alt="Fire" style="height:38px;vertical-align:middle;margin-right:8px;">
       Live Product Leads
       <button id="leadsClose" style="margin-left:auto;">X</button>
     </h2>
@@ -231,7 +194,7 @@
     </div>
   </div>
 
-  <!-- === Scripts === -->
+  <!-- === Scripts (merged) === -->
   <script>
     const categorySelect = document.getElementById("flipToolCategory");
     const siteSelect = document.getElementById("flipToolSite");
@@ -239,6 +202,8 @@
     const leadsContainer = document.getElementById("leadsContainer");
     const leadsClose = document.getElementById("leadsClose");
     const showMoreBtn = document.getElementById("showMoreBtn");
+    const cancelBtn = document.getElementById("cancelFlipTool");
+    const flipTool = document.getElementById("flipToolContainer");
 
     const sites = {
       online: [
@@ -316,6 +281,9 @@
     };
     leadsClose.onclick = function() { leadsContainer.style.display = "none"; };
 
+    // Cancel button
+    cancelBtn.onclick = function(){ flipTool.remove(); };
+
     // === Draggable ===
     function makeDraggable(el) {
       const header = el.querySelector("h2");
@@ -329,14 +297,13 @@
           if (!isDown) return;
           el.style.left = (e.clientX - offsetX) + "px";
           el.style.top = (e.clientY - offsetY) + "px";
-          el.style.transform = "none"; // stop centering when dragged
+          el.style.transform = "none";
         };
         document.onmouseup = () => { isDown = false; };
       };
     }
-
-    makeDraggable(document.getElementById("flipToolContainer"));
-    makeDraggable(document.getElementById("leadsContainer"));
+    makeDraggable(flipTool);
+    makeDraggable(leadsContainer);
 
     // === Google Sheet Fetch + Limit Rows ===
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTgbSe4tpoMJOwrgvgAjDB8q_o-TgXDEvNme6T6mbUwpDu1t7kc-gIw7x7SX_RcY7jSLLHBSt_Qin3I/pub?output=csv";
